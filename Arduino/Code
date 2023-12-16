@@ -1,0 +1,30 @@
+#include <math.h>
+
+#define FIRST_LED_PIN 2
+#define LED_COUNT     10
+
+void setup() {
+  // put your setup code here, to run once:
+  for (int i = 0; i < LED_COUNT; ++i)
+    pinMode(i + FIRST_LED_PIN, OUTPUT);
+  Serial.begin(9600);
+ 
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  float tr = 1023.0 / analogRead(A0) - 1;
+  tr = 10000 / tr;
+  float steinhart;
+   steinhart = tr / 100000;
+   steinhart = log(steinhart);
+   steinhart /= 3950;
+   steinhart += 1.0 / (25 + 273.15);
+   steinhart = 1.0 / steinhart;
+   steinhart -= 273.15;
+  for (int i = 0; i < LED_COUNT; ++i) {
+    boolean enableSegment = (steinhart >= 20+i);
+    digitalWrite(i+FIRST_LED_PIN, enableSegment);
+  }
+  delay(5000); // 300_000
+}
